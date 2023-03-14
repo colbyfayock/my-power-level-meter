@@ -1,4 +1,4 @@
-import { Index } from 'solid-js';
+import { createSignal, Index } from 'solid-js';
 
 import reader1 from './assets/reader-1.png';
 import reader2 from './assets/reader-2.png';
@@ -15,7 +15,12 @@ const METER_INCREMENT_PERCENTAGE = 100 / INCREMENTS_COUNT
 
 function App() {
 
-  const powerLevel = 4000;
+  const [powerLevel, setPowerLevel] = createSignal(0);
+
+  function handleOnPowerUp() {
+    if ( powerLevel() >= MAX_POWER ) return;
+    setPowerLevel(powerLevel() + POWER_UP_AMOUNT);
+  }
 
   return (
     <div class={styles.app}>
@@ -23,14 +28,14 @@ function App() {
         <div class={styles.power}>
           <span class={styles.powerMeter}>
             <span class={styles.powerMeterLevel} style={{
-              height: `${powerLevel / MAX_POWER * 100}%`
+              height: `${powerLevel() / MAX_POWER * 100}%`
             }} />
 
             <Index each={[...Array(INCREMENTS_COUNT + 1)]}>
               {(_, index) => (
                 <span
                   class={styles.powerMeterIncrement}
-                  data-power-active={METER_INCREMENT_PERCENTAGE * index <= powerLevel / MAX_POWER * 100}
+                  data-power-active={METER_INCREMENT_PERCENTAGE * index <= powerLevel() / MAX_POWER * 100}
                   style={{
                     bottom: `${METER_INCREMENT_PERCENTAGE * index}%`
                   }}
@@ -45,8 +50,8 @@ function App() {
             <img width="960" height="540" src={reader1} alt="Watching" loading="eager" />
           </p>
           <p class={styles.readerLevel}>
-            <span>{ powerLevel }</span>
-            <button>Power Up</button>
+            <span>{ powerLevel() }</span>
+            <button onClick={handleOnPowerUp}>Power Up</button>
           </p>
         </div>
       </main>
