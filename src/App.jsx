@@ -47,7 +47,18 @@ function App() {
         </div>
         <div class={styles.reader}>
           <p class={styles.readerImage}>
-            <img width="960" height="540" src={reader1} alt="Watching" loading="eager" />
+            <img width="960" height="540" src={reader1} alt="Watching" loading="eager" style={{
+              "z-index": powerLevel() >= 0 && powerLevel() < 3000 ? 1 : 0
+            }} />
+            <img width="960" height="540" src={reader2} alt="Concerned" loading="lazy" style={{
+              "z-index": powerLevel() >= 3000 && powerLevel() < 6000 ? 1 : 0
+            }} />
+            <img width="960" height="540" src={reader3} alt="Surprised" loading="lazy" style={{
+              "z-index": powerLevel() >= 6000 && powerLevel() < 9000 ? 1 : 0
+            }} />
+            <img width="960" height="540" src={reader4} alt="OVER 9000?!" loading="lazy" style={{
+              "z-index": powerLevel() >= 9000 ? 1 : 0
+            }} />
           </p>
           <p class={styles.readerLevel}>
             <span>{ powerLevel() }</span>
