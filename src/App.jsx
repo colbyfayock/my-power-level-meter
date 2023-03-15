@@ -1,4 +1,4 @@
-import { createSignal, Index } from 'solid-js';
+import { createSignal, Index, onCleanup } from 'solid-js';
 
 import reader1 from './assets/reader-1.png';
 import reader2 from './assets/reader-2.png';
@@ -13,14 +13,31 @@ const POWER_UP_AMOUNT = 200;
 const INCREMENTS_COUNT = MAX_POWER / INCREMENT_AMOUNT;
 const METER_INCREMENT_PERCENTAGE = 100 / INCREMENTS_COUNT
 
+let timeout;
+
 function App() {
 
   const [powerLevel, setPowerLevel] = createSignal(0);
 
+  onCleanup(() => clearTimeout(timeout));
+
   function handleOnPowerUp() {
     if ( powerLevel() >= MAX_POWER ) return;
     setPowerLevel(powerLevel() + POWER_UP_AMOUNT);
+    clearTimeout(timeout);
+    releasePower();
   }
+
+  function releasePower() {
+    timeout = setTimeout(() => {
+      const isAbovePowerIncrement = powerLevel() % INCREMENT_AMOUNT !== 0;
+      if ( powerLevel() > 0 && isAbovePowerIncrement) {
+        setPowerLevel(powerLevel() - POWER_UP_AMOUNT);
+        releasePower();
+      }
+    }, 500);
+  }
+
 
   return (
     <div class={styles.app}>
